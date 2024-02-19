@@ -1,13 +1,10 @@
-const knex = require("knex");
-require("dotenv").config();
+import knex from "knex";
+import knexConfig from "../knexfile.js";
 
-const db = knex({
-  client: "mysql2",
-  connection: {
-    host: process.env.DB_HOST,
-    database: process.env.DB_NAME,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-  },
-});
-module.exports = db;
+const environment = "production";
+
+const config = knexConfig[environment];
+
+const db = knex(config);
+
+export default db;
