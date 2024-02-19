@@ -24,27 +24,9 @@ exports.up = function (knex) {
         .onDelete("CASCADE");
       table.timestamp("created_at").defaultTo(knex.fn.now());
       table.timestamp("updated_at").defaultTo(knex.fn.now());
-    })
-    .createTable("comments", (table) => {
-      table.increments("id").unsigned().notNullable().primary();
-      table.string("name").notNullable();
-      table.string("comment", 1000).notNullable();
-      table.integer("likes").notNullable().defaultTo(0);
-
-      table.integer("memories_id").unsigned();
-      table
-        .foreign("memories_id")
-        .references("id")
-        .inTable("memories")
-        .onUpdate("CASCADE")
-        .onDelete("CASCADE");
-      table.timestamp("timestamp").defaultTo(knex.fn.now());
     });
 };
 
 exports.down = function (knex) {
-  return knex.schema
-    .dropTable("comments")
-    .dropTable("memories")
-    .dropTable("users");
+  return knex.schema.dropTable("memories").dropTable("users");
 };

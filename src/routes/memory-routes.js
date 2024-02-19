@@ -1,4 +1,4 @@
-const knex = require("knex")(require("../knexfile"));
+const knex = require("knex")(require("../../knexfile"));
 const router = require("express").Router();
 
 router.get("/", async (_req, res) => {

@@ -1,7 +1,6 @@
 const bcrypt = require("bcrypt");
 
 exports.seed = async function (knex) {
-  await knex("comments").del();
   await knex("memories").del();
   await knex("users").del();
 
@@ -80,41 +79,6 @@ exports.seed = async function (knex) {
       users_id: 2,
       created_at: knex.fn.now(),
       updated_at: knex.fn.now(),
-    },
-  ]);
-
-  await knex("comments").insert([
-    {
-      id: 1,
-      name: "User 1",
-      comment: "This is a comment 1",
-      likes: 10,
-      memories_id: 1,
-      timestamp: knex.fn.now(),
-    },
-    {
-      id: 2,
-      name: "User 2",
-      comment: "This is a comment 2",
-      likes: 20,
-      memories_id: 1,
-      timestamp: knex.fn.now(),
-    },
-    {
-      id: 3,
-      name: "User 3",
-      comment: "This is a comment 3",
-      likes: 30,
-      memories_id: 2,
-      timestamp: knex.fn.now(),
-    },
-    {
-      id: 4,
-      name: "User 4",
-      comment: "This is a comment 4",
-      likes: 40,
-      memories_id: 2,
-      timestamp: knex.fn.now(),
     },
   ]);
 };
