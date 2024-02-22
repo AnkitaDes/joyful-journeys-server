@@ -23,9 +23,10 @@ const createMemory = asyncHandler(async (req, res) => {
   }
 
   const image = await uploadOnCloudinary(imageLocalPath);
+  console.log("image:", image);
 
-  if (!image) {
-    throw new ApiError(400, "Image file is required");
+  if (!req.file) {
+    throw new ApiError(400, "Image is required");
   }
 
   try {
