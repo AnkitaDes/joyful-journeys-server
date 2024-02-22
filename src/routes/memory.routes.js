@@ -4,6 +4,7 @@ import {
   addLike,
   getAllMemories,
   getMemoryById,
+  getAllUserMemories,
   updateMemory,
   deleteMemory,
 } from "../controllers/memory.controller.js";
@@ -14,14 +15,16 @@ const router = Router();
 
 router.route("/create-memory").post(upload.single("image"), createMemory);
 
-router.route("/:id/like").put(verifyJWT, addLike);
+router.route("/:id/like").put(addLike);
 
 router.route("/").get(getAllMemories);
 
 router.route("/:id").get(getMemoryById);
 
-router.route("/:id").put(verifyJWT, upload.single("image"), updateMemory);
+router.route("/user/:users_id").get(getAllUserMemories);
 
-router.route("/:id").delete(verifyJWT, deleteMemory);
+router.route("/:id").put(upload.single("image"), updateMemory);
+
+router.route("/:id").delete(deleteMemory);
 
 export default router;

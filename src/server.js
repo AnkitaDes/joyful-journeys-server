@@ -1,11 +1,10 @@
-require("dotenv").config();
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 
 const app = express();
-const dotenv = require("dotenv");
+
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN,
@@ -13,9 +12,9 @@ app.use(
   })
 );
 
+app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 app.use(express.static("public"));
 app.use(cookieParser());
 

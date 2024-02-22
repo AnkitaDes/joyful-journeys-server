@@ -97,6 +97,30 @@ const getMemoryById = asyncHandler(async (req, res, next) => {
     .json(new ApiResponse(200, { memory }, "Fetched memory successfully"));
 });
 
+// Function to get all memories of a specific user
+
+const getAllUserMemories = asyncHandler(async (req, res, next) => {
+  console.log("Request parameters:", req.params);
+  const { users_id } = req.params;
+
+  const userId = Number(users_id);
+
+  console.log("User ID:", userId);
+
+  const memories = await db("memories").where({ users_id: userId }).select("*");
+
+  console.log("Memories:", memories);
+
+  if (memories.length === 0) {
+    throw new ApiError(404, "No memories found");
+  }
+  res
+    .status(200)
+    .json(
+      new ApiResponse(200, { memories }, "Fetched all memories successfully")
+    );
+});
+
 // Function to update a specific memory by id
 const updateMemory = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
@@ -189,6 +213,7 @@ export {
   addLike,
   getAllMemories,
   getMemoryById,
+  getAllUserMemories,
   updateMemory,
   deleteMemory,
 };
