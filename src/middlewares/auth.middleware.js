@@ -7,7 +7,7 @@ const verifyJWT = asyncHandler(async (req, res, next) => {
   try {
     const token =
       req.cookies.accessToken || req.headers.authorization?.split(" ")[1];
-    console.log("token:", token); // Bearer <token>
+    console.log("token:", token);
 
     if (!token || typeof token !== "string") {
       throw new ApiError(401, "Unauthorized request");
@@ -33,7 +33,6 @@ const verifyJWT = asyncHandler(async (req, res, next) => {
       throw new ApiError(401, "Invalid Access Token");
     }
 
-    // Remove password from the user object
     delete user.password;
 
     req.user = user;

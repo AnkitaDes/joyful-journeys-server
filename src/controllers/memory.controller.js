@@ -73,7 +73,6 @@ const addLike = asyncHandler(async (req, res) => {
   }
 });
 
-// Function to get all memories
 const getAllMemories = asyncHandler(async (req, res, next) => {
   const memories = await db("memories").select("*");
   if (!memories) {
@@ -86,7 +85,6 @@ const getAllMemories = asyncHandler(async (req, res, next) => {
     );
 });
 
-// Function to get a specific memory by id
 const getMemoryById = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   const memory = await db("memories").where({ id }).first();
@@ -97,8 +95,6 @@ const getMemoryById = asyncHandler(async (req, res, next) => {
     .status(200)
     .json(new ApiResponse(200, { memory }, "Fetched memory successfully"));
 });
-
-// Function to get all memories of a specific user
 
 const getAllUserMemories = asyncHandler(async (req, res, next) => {
   console.log("Request parameters:", req.params);
@@ -122,7 +118,25 @@ const getAllUserMemories = asyncHandler(async (req, res, next) => {
     );
 });
 
-// Function to update a specific memory by id
+const getAllOtherMemories = asyncHandler(async (req, res, next) => {
+  const userId = req.user.id;
+  const memories = await db("memories")
+    .whereNot("users_id", userId)
+    .select("*");
+  if (!memories) {
+    throw new ApiError(404, "No memories found");
+  }
+  res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        { memories },
+        "Fetched all other memories successfully"
+      )
+    );
+});
+
 const updateMemory = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   const { users_id, description } = req.body;
@@ -131,10 +145,8 @@ const updateMemory = asyncHandler(async (req, res, next) => {
     throw new ApiError(400, "Image file is required");
   }
 
-  // Get the local file path
   const localFilePath = req.file.path;
 
-  // Validation - not empty
   if (
     [users_id, description, localFilePath].some(
       (field) => !field || field.trim() === ""
@@ -143,35 +155,26 @@ const updateMemory = asyncHandler(async (req, res, next) => {
     throw new ApiError(400, "All fields are required");
   }
 
-  // Upload image to Cloudinary and get the URL
   const cloudinaryResponse = await uploadOnCloudinary(localFilePath);
   const imageUrl = cloudinaryResponse ? cloudinaryResponse.url : null;
-
-  // Check if image upload failed
 
   if (!imageUrl) {
     throw new ApiError(500, "Image upload failed");
   }
 
-  // Update memory object in database
   const memory = {
     users_id,
     description,
     image: imageUrl,
   };
 
-  // Check if memory exists
   const existingMemory = await db("memories").where({ id }).first();
 
   if (!existingMemory) {
     throw new ApiError(404, "Memory not found");
   }
 
-  // Update memory in database
-
   const updateCount = await db("memories").where({ id }).update(memory);
-
-  // Check for memory update
 
   if (!updateCount) {
     throw new ApiError(500, "Memory update failed");
@@ -179,7 +182,6 @@ const updateMemory = asyncHandler(async (req, res, next) => {
 
   const updatedMemory = await db("memories").where({ id }).first();
 
-  // Return response
   res
     .status(200)
     .json(
@@ -191,19 +193,15 @@ const updateMemory = asyncHandler(async (req, res, next) => {
     );
 });
 
-// Function to delete a specific memory by id
 const deleteMemory = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
 
-  // Delete memory from database
   const deletedRows = await db("memories").where({ id }).del();
 
-  // Check if memory was deleted
   if (!deletedRows) {
     throw new ApiError(404, "Memory not found");
   }
 
-  // Return response
   res
     .status(200)
     .json(new ApiResponse(200, null, "Memory deleted successfully"));
@@ -215,6 +213,7 @@ export {
   getAllMemories,
   getMemoryById,
   getAllUserMemories,
+  getAllOtherMemories,
   updateMemory,
   deleteMemory,
 };

@@ -18,12 +18,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(cookieParser());
 
-//routes import
-
 import userRouter from "./routes/user.routes.js";
 import memoriesRouter from "./routes/memory.routes.js";
 
-//routes declaration
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/memories", memoriesRouter);
 

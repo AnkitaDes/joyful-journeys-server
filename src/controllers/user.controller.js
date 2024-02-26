@@ -5,8 +5,6 @@ import db from "../db/database.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
-// generate access token
-
 const generateAccessToken = async (userId) => {
   try {
     const user = await db("users").where("id", userId).first();
@@ -32,19 +30,14 @@ const generateAccessToken = async (userId) => {
   }
 };
 
-// register user
-
 const registerUser = asyncHandler(async (req, res, next) => {
-  // get user details from frontend
   const { username, email, password } = req.body;
   console.log("email:", email);
 
-  // validation-not empty
   if ([username, email, password].some((field) => field?.trim() === "")) {
     throw new ApiError(400, "All fields are required");
   }
 
-  // check if user already exists: email, username
   const existingUser = await db("users")
     .where({ email })
     .orWhere({ username })
@@ -54,7 +47,6 @@ const registerUser = asyncHandler(async (req, res, next) => {
   }
   console.log("existingUser:", existingUser);
 
-  // create user object-create entry in mysql db
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const user = {
@@ -64,15 +56,12 @@ const registerUser = asyncHandler(async (req, res, next) => {
   };
   const [id] = await db("users").insert(user);
 
-  // remove password and refresh tokens from the response
   const userResponse = { id, username, email };
 
-  // check for user creation
   if (!id) {
     throw new ApiError(500, "User creation failed");
   }
 
-  // return response
   res
     .status(201)
     .json(
@@ -83,8 +72,6 @@ const registerUser = asyncHandler(async (req, res, next) => {
       )
     );
 });
-
-// login user
 
 const loginUser = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;

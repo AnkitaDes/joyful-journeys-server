@@ -5,6 +5,7 @@ import {
   getAllMemories,
   getMemoryById,
   getAllUserMemories,
+  getAllOtherMemories,
   updateMemory,
   deleteMemory,
 } from "../controllers/memory.controller.js";
@@ -22,6 +23,8 @@ router.route("/").get(getAllMemories);
 router.route("/:id").get(getMemoryById);
 
 router.route("/user/:users_id").get(getAllUserMemories);
+
+router.route("/other/:users_id").get(getAllOtherMemories);
 
 router.route("/:id").put(upload.single("image"), updateMemory);
 
